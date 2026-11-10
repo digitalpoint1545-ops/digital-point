@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#123c36">
+<title>DIGITAL POINT | Business Manager</title>
+<style>
+:root{--green:#123c36;--green2:#1e6558;--gold:#e5b94f;--bg:#f3f6f5;--card:#fff;--text:#172b28;--muted:#6b7d79;--line:#e2eae7;--red:#b93838}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px system-ui,-apple-system,"Noto Sans Devanagari",sans-serif}
+header{background:linear-gradient(120deg,var(--green),#1c6658);color:white;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;position:sticky;top:0;z-index:5}
+.brand{font-weight:900;letter-spacing:1px;font-size:20px}.sub{font-size:12px;opacity:.8}.wrap{max-width:1200px;margin:auto;padding:16px}
+nav{display:flex;gap:8px;overflow:auto;padding:10px 0 14px}nav button,.btn{border:0;border-radius:10px;padding:10px 14px;background:#e4eeea;color:var(--green);font-weight:700;white-space:nowrap;cursor:pointer}nav button.active,.primary{background:var(--green2);color:white}.danger{background:#fff0f0;color:var(--red)}.gold{background:#fff4d6;color:#745300}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px;box-shadow:0 2px 8px #173b3210}.metric{font-size:25px;font-weight:850;margin-top:5px}.muted{color:var(--muted);font-size:13px}.section{display:none}.section.show{display:block}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.between{display:flex;justify-content:space-between;align-items:center;gap:10px}.field{display:flex;flex-direction:column;gap:5px;min-width:150px;flex:1}label{font-size:13px;color:var(--muted);font-weight:650}input,select,textarea{width:100%;padding:11px;border:1px solid #d5e0dc;border-radius:9px;background:white;font:inherit;color:var(--text)}textarea{min-height:70px}form{background:white;border:1px solid var(--line);border-radius:14px;padding:15px;margin:12px 0}.formgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.tablewrap{overflow:auto;background:white;border:1px solid var(--line);border-radius:12px;margin-top:12px}table{width:100%;border-collapse:collapse;min-width:700px}th,td{text-align:left;padding:11px;border-bottom:1px solid var(--line);font-size:13px}th{background:#f0f5f3;color:#52635f}td .btn{padding:6px 9px;font-size:12px}.pill{padding:4px 8px;border-radius:20px;background:#eaf3ef;color:#236052;font-size:12px}.empty{padding:25px;text-align:center;color:var(--muted)}.toolbar{display:flex;gap:8px;flex-wrap:wrap}.notice{background:#fff8e5;border:1px solid #f1dfaa;border-radius:12px;padding:12px;margin:12px 0;font-size:13px}.small{font-size:12px}.login{max-width:390px;margin:8vh auto;padding:22px}.login h2{margin-top:0}.hidden{display:none!important}
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,1fr)}.formgrid{grid-template-columns:1fr 1fr}header{padding:14px}.wrap{padding:12px}.metric{font-size:21px}}
+@media(max-width:460px){.formgrid{grid-template-columns:1fr}.grid{gap:8px}.card{padding:12px}.brand{font-size:17px}}
+</style></head>
+<body>
+<header><div><div class="brand">◆ DIGITAL POINT</div><div class="sub">CSC & CYBER CAFE BUSINESS MANAGER</div></div><div class="row"><span class="small" id="today"></span><button class="btn gold" onclick="lockApp()">लॉक</button></div></header>
+<div id="login" class="login card hidden"><h2>🔐 DIGITAL POINT</h2><p class="muted">अपना निजी पासवर्ड डालें</p><form onsubmit="loginApp(event)"><div class="field"><label>पासवर्ड</label><input id="pass" type="password" required placeholder="पासवर्ड"></div><button class="btn primary" style="width:100%;margin-top:12px">लॉगिन</button></form><p class="muted small">पहली बार उपयोग पर अपना पासवर्ड बनाएं।</p></div>
+<main id="app" class="wrap hidden">
+<nav>
+<button class="active" data-tab="dashboard">डैशबोर्ड</button><button data-tab="clients">दुकानदार / ग्राहक</button><button data-tab="applications">आवेदन</button><button data-tab="payments">पेमेंट</button><button data-tab="reports">रिपोर्ट</button><button data-tab="backup">बैकअप</button>
+</nav>
+<section id="dashboard" class="section show">
+<div class="between"><div><h2>डैशबोर्ड</h2><div class="muted">आपके बिजनेस का पूरा हिसाब</div></div><button class="btn primary" onclick="showTab('applications');document.getElementById('appForm').scrollIntoView()">+ नया आवेदन</button></div>
+<div class="grid" style="margin-top:14px">
+<div class="card"><div class="muted">कुल दुकानदार</div><div class="metric" id="mClients">0</div></div>
+<div class="card"><div class="muted">कुल आवेदन</div><div class="metric" id="mApps">0</div></div>
+<div class="card"><div class="muted">कुल फीस</div><div class="metric" id="mFee">₹0</div></div>
+<div class="card"><div class="muted">कुल जमा</div><div class="metric" id="mPaid">₹0</div></div>
+<div class="card"><div class="muted">कुल बकाया</div><div class="metric" id="mDue">₹0</div></div>
+<div class="card"><div class="muted">काम पूरे</div><div class="metric" id="mDone">0</div></div>
+<div class="card"><div class="muted">प्रक्रिया में</div><div class="metric" id="mPending">0</div></div>
+<div class="card"><div class="muted">आज की पेमेंट</div><div class="metric" id="mToday">₹0</div></div>
+</div><div class="notice">⚠️ यह शुरुआती संस्करण आपके इसी डिवाइस के ब्राउज़र में डेटा सेव करता है। मोबाइल और लैपटॉप के बीच डेटा अपने आप सिंक नहीं होगा। नियमित बैकअप डाउनलोड करें।</div>
+<h3>हाल के आवेदन</h3><div id="recent"></div>
+</section>
+<section id="clients" class="section">
+<div class="between"><div><h2>दुकानदार / ग्राहक</h2><div class="muted">हर दुकानदार के कई आवेदन जोड़ सकते हैं</div></div></div>
+<form id="clientForm"><h3>नया दुकानदार जोड़ें</h3><div class="formgrid"><div class="field"><label>दुकानदार / ग्राहक का नाम *</label><input name="name" required></div><div class="field"><label>मोबाइल नंबर</label><input name="mobile" inputmode="numeric"></div><div class="field"><label>दुकान / पता</label><input name="shop"></div></div><div class="row" style="margin-top:12px"><button class="btn primary">सेव करें</button></div></form>
+<div class="toolbar"><input id="clientSearch" placeholder="नाम या मोबाइल से खोजें..." oninput="renderClients()"></div><div id="clientTable"></div>
+</section>
+<section id="applications" class="section">
+<div class="between"><div><h2>आवेदन मैनेजमेंट</h2><div class="muted">सभी CSC और Cyber Cafe सेवाओं का रिकॉर्ड</div></div></div>
+<form id="appForm"><h3>नया आवेदन दर्ज करें</h3><div class="formgrid">
+<div class="field"><label>दुकानदार *</label><select name="clientId" id="appClient" required></select></div>
+<div class="field"><label>ग्राहक का नाम</label><input name="customer"></div>
+<div class="field"><label>ग्राहक मोबाइल</label><input name="mobile" inputmode="numeric"></div>
+<div class="field"><label>सेवा *</label><select name="service" id="service" required></select></div>
+<div class="field"><label>आवेदन / रेफरेंस नंबर</label><input name="ref"></div>
+<div class="field"><label>कुल फीस (₹) *</label><input name="fee" type="number" min="0" step="0.01" required></div>
+<div class="field"><label>आवेदन तारीख</label><input name="date" type="date" id="appDate"></div>
+<div class="field"><label>काम की स्थिति</label><select name="status"><option>नया आवेदन</option><option>दस्तावेज बाकी</option><option>प्रक्रिया जारी</option><option>पूरा हो गया</option><option>रिजेक्ट</option></select></div>
+<div class="field"><label>दस्तावेज मिले?</label><select name="docs"><option>हाँ</option><option>नहीं</option><option>आंशिक</option></select></div>
+<div class="field" style="grid-column:1/-1"><label>टिप्पणी</label><textarea name="notes"></textarea></div>
+</div><div class="row" style="margin-top:12px"><button class="btn primary">आवेदन सेव करें</button></div></form>
+<div class="toolbar"><input id="appSearch" placeholder="नाम, मोबाइल, रेफरेंस से खोजें..." oninput="renderApps()"><select id="statusFilter" onchange="renderApps()" style="max-width:180px"><option value="">सभी स्थिति</option><option>नया आवेदन</option><option>दस्तावेज बाकी</option><option>प्रक्रिया जारी</option><option>पूरा हो गया</option><option>रिजेक्ट</option></select></div><div id="appTable"></div>
+</section>
+<section id="payments" class="section">
+<h2>पेमेंट मैनेजमेंट</h2><div class="muted">एक आवेदन या दुकानदार के कई आवेदनों का भुगतान दर्ज करें</div>
+<form id="paymentForm"><h3>पेमेंट दर्ज करें</h3><div class="formgrid">
+<div class="field"><label>दुकानदार *</label><select name="clientId" id="payClient" required onchange="fillPayApps()"></select></div>
+<div class="field"><label>भुगतान किसके लिए?</label><select name="allocation" id="allocation" onchange="togglePayApp()"><option value="single">एक आवेदन</option><option value="general">दुकानदार के खाते में / कई आवेदन</option></select></div>
+<div class="field" id="payAppWrap"><label>आवेदन</label><select name="appId" id="payApp"></select></div>
+<div class="field"><label>जमा रकम (₹) *</label><input name="amount" type="number" min="1" step="0.01" required></div>
+<div class="field"><label>भुगतान माध्यम</label><select name="method"><option>Cash</option><option>UPI</option><option>Bank</option><option>Other</option></select></div>
+<div class="field"><label>तारीख</label><input name="date" id="payDate" type="date"></div>
+<div class="field"><label>नोट / UTR</label><input name="note"></div>
+</div><div class="row" style="margin-top:12px"><button class="btn primary">पेमेंट सेव करें</button></div></form>
+<h3>पेमेंट हिस्ट्री</h3><div id="paymentTable"></div>
+</section>
+<section id="reports" class="section"><h2>रिपोर्ट</h2><div class="toolbar"><select id="reportClient" onchange="renderReports()"><option value="">सभी दुकानदार</option></select><button class="btn" onclick="downloadCSV()">Excel/CSV डाउनलोड</button></div><div id="reportSummary" class="grid" style="margin-top:12px"></div><div id="reportTable"></div></section>
+<section id="backup" class="section"><h2>बैकअप और सेटिंग</h2><div class="card"><h3>डेटा बैकअप</h3><p class="muted">JSON बैकअप डाउनलोड करके सुरक्षित रखें। नए डिवाइस पर Restore करने से पहले वहां का डेटा बैकअप कर लें।</p><div class="toolbar"><button class="btn primary" onclick="backup()">बैकअप डाउनलोड</button><label class="btn">बैकअप Restore<input type="file" accept=".json,application/json" onchange="restore(event)" hidden></label></div></div><div class="card" style="margin-top:12px"><h3>पासवर्ड बदलें</h3><form id="passwordForm"><div class="formgrid"><div class="field"><label>पुराना पासवर्ड</label><input name="old" type="password" required></div><div class="field"><label>नया पासवर्ड</label><input name="next" type="password" minlength="6" required></div></div><button class="btn primary" style="margin-top:12px">पासवर्ड बदलें</button></form></div><div class="notice">यह MVP एकल-डिवाइस ऑफलाइन रिकॉर्ड सिस्टम है। ऑनलाइन सिंक, सर्वर लॉगिन और क्लाउड बैकअप जोड़ने के लिए अगला चरण Supabase/होस्टिंग सेटअप होगा।</div></section>
+</main>
+<script>
+const KEY='dp_manager_v1', PASS='dp_manager_pass_v1';
+const services=['जन्म प्रमाण पत्र','मृत्यु प्रमाण पत्र','आधार सेवा','PAN कार्ड','वोटर कार्ड','राशन कार्ड','आयुष्मान कार्ड','जाति प्रमाण पत्र','आय प्रमाण पत्र','निवास प्रमाण पत्र','ई-श्रम / लेबर कार्ड','पासपोर्ट','रेल टिकट','फ्लाइट टिकट','ऑनलाइन फॉर्म','स्कॉलरशिप फॉर्म','सरकारी नौकरी फॉर्म','प्रिंट / फोटो / लैमिनेशन','रिचार्ज / बिल पेमेंट','अन्य सेवा'];
+let db=load();
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{clients:[],apps:[],payments:[]}}catch(e){return {clients:[],apps:[],payments:[]}}}
+function save(){localStorage.setItem(KEY,JSON.stringify(db));refresh()}
+function id(){return 'DP'+Date.now().toString(36).toUpperCase()+Math.random().toString(36).slice(2,5).toUpperCase()}
+function money(n){return '₹'+Number(n||0).toLocaleString('en-IN',{maximumFractionDigits:2})}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function today(){return new Date().toISOString().slice(0,10)}
+document.getElementById('today').textContent=new Date().toLocaleDateString('hi-IN');
+document.getElementById('appDate').value=today();document.getElementById('payDate').value=today();
+function setup(){if(!localStorage.getItem(PASS)){let p=prompt('पहली बार: DIGITAL POINT के लिए कम से कम 6 अक्षर का पासवर्ड बनाएं');if(!p||p.length<6){alert('पासवर्ड बनाना जरूरी है। पेज फिर खोलें।');return false}localStorage.setItem(PASS,p)}return true}
+function init(){if(!setup())return;document.getElementById('login').classList.remove('hidden');}
+function loginApp(e){e.preventDefault();if(document.getElementById('pass').value===localStorage.getItem(PASS)){document.getElementById('login').classList.add('hidden');document.getElementById('app').classList.remove('hidden');refresh()}else alert('गलत पासवर्ड')}
+function lockApp(){document.getElementById('app').classList.add('hidden');document.getElementById('login').classList.remove('hidden');document.getElementById('pass').value=''}
+function showTab(t){document.querySelectorAll('.section').forEach(x=>x.classList.remove('show'));document.getElementById(t).classList.add('show');document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.tab===t));refresh()}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+function clientName(cid){return db.clients.find(c=>c.id===cid)?.name||'अज्ञात'}
+function paidForApp(aid){return db.payments.filter(p=>p.appId===aid).reduce((s,p)=>s+Number(p.amount),0)}
+function paidForClient(cid){return db.payments.filter(p=>p.clientId===cid).reduce((s,p)=>s+Number(p.amount),0)}
+function allocatedTotal(cid){return db.apps.filter(a=>a.clientId===cid).reduce((s,a)=>s+Number(a.fee),0)}
+function dueClient(cid){return Math.max(0,allocatedTotal(cid)-paidForClient(cid))}
+function refresh(){fillSelects();renderDashboard();renderClients();renderApps();renderPayments();renderReports()}
+function fillSelects(){
+ const c='<option value="">दुकानदार चुनें</option>'+db.clients.map(x=>`<option value="${x.id}">${esc(x.name)} ${x.mobile?'('+esc(x.mobile)+')':''}</option>`).join('');
+ document.getElementById('appClient').innerHTML=c;document.getElementById('payClient').innerHTML=c;
+ document.getElementById('reportClient').innerHTML='<option value="">सभी दुकानदार</option>'+db.clients.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('');
+ document.getElementById('service').innerHTML=services.map(x=>`<option>${x}</option>`).join('');
+ fillPayApps();
+}
+function renderDashboard(){
+ const total=db.apps.reduce((s,a)=>s+Number(a.fee),0),paid=db.payments.reduce((s,p)=>s+Number(p.amount),0);
+ const put=(id,v)=>document.getElementById(id).textContent=v;
+ put('mClients',db.clients.length);put('mApps',db.apps.length);put('mFee',money(total));put('mPaid',money(paid));put('mDue',money(Math.max(0,total-paid)));
+ put('mDone',db.apps.filter(a=>a.status==='पूरा हो गया').length);put('mPending',db.apps.filter(a=>!['पूरा हो गया','रिजेक्ट'].includes(a.status)).length);
+ put('mToday',money(db.payments.filter(p=>p.date===today()).reduce((s,p)=>s+Number(p.amount),0)));
+ const rows=db.apps.slice().sort((a,b)=>b.created-a.created).slice(0,6);
+ document.getElementById('recent').innerHTML=rows.length?table(['आवेदन','दुकानदार','सेवा','फीस','स्थिति'],rows.map(a=>[esc(a.ref||a.id),esc(clientName(a.clientId)),esc(a.service),money(a.fee),`<span class="pill">${esc(a.status)}</span>`])):'<div class="empty">अभी कोई आवेदन नहीं है।</div>';
+}
+function table(headers,rows){return `<div class="tablewrap"><table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(x=>`<td>${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
+document.getElementById('clientForm').onsubmit=e=>{e.preventDefault();let f=new FormData(e.target);db.clients.push({id:id(),name:f.get('name').trim(),mobile:f.get('mobile'),shop:f.get('shop'),created:Date.now()});e.target.reset();save();alert('दुकानदार सेव हो गया')};
+function renderClients(){let q=(document.getElementById('clientSearch')?.value||'').toLowerCase();let xs=db.clients.filter(c=>(c.name+' '+c.mobile+' '+c.shop).toLowerCase().includes(q));document.getElementById('clientTable').innerHTML=xs.length?table(['नाम','मोबाइल','दुकान / पता','आवेदन','कुल फीस','जमा','बकाया'],xs.map(c=>[esc(c.name),esc(c.mobile),esc(c.shop),db.apps.filter(a=>a.clientId===c.id).length,money(allocatedTotal(c.id)),money(paidForClient(c.id)),money(dueClient(c.id))])):'<div class="empty">कोई दुकानदार नहीं मिला।</div>'}
+document.getElementById('appForm').onsubmit=e=>{e.preventDefault();let f=new FormData(e.target);if(!f.get('clientId'))return alert('पहले दुकानदार जोड़ें');db.apps.push({id:id(),clientId:f.get('clientId'),customer:f.get('customer'),mobile:f.get('mobile'),service:f.get('service'),ref:f.get('ref'),fee:Number(f.get('fee')),date:f.get('date')||today(),status:f.get('status'),docs:f.get('docs'),notes:f.get('notes'),created:Date.now()});e.target.reset();document.getElementById('appDate').value=today();save();alert('आवेदन सेव हो गया')};
+function renderApps(){let q=(document.getElementById('appSearch')?.value||'').toLowerCase(),st=document.getElementById('statusFilter')?.value||'';let xs=db.apps.filter(a=>(!st||a.status===st)&&(a.customer+' '+a.mobile+' '+a.ref+' '+a.service+' '+clientName(a.clientId)).toLowerCase().includes(q)).sort((a,b)=>b.created-a.created);document.getElementById('appTable').innerHTML=xs.length?table(['रेफरेंस','दुकानदार / ग्राहक','सेवा','फीस','जमा','बकाया','स्थिति','अपडेट'],xs.map(a=>[esc(a.ref||a.id),esc(clientName(a.clientId)+' / '+(a.customer||'')),esc(a.service),money(a.fee),money(paidForApp(a.id)),money(Math.max(0,a.fee-paidForApp(a.id))),`<span class="pill">${esc(a.status)}</span>`,`<button class="btn" onclick="changeStatus('${a.id}')">स्थिति बदलें</button>`])):'<div class="empty">कोई आवेदन नहीं मिला।</div>'}
+function changeStatus(aid){let a=db.apps.find(x=>x.id===aid);let s=prompt('नई स्थिति लिखें: नया आवेदन / दस्तावेज बाकी / प्रक्रिया जारी / पूरा हो गया / रिजेक्ट',a.status);if(['नया आवेदन','दस्तावेज बाकी','प्रक्रिया जारी','पूरा हो गया','रिजेक्ट'].includes(s)){a.status=s;save()}}
+function fillPayApps(){let cid=document.getElementById('payClient').value;let apps=db.apps.filter(a=>a.clientId===cid);document.getElementById('payApp').innerHTML=apps.map(a=>`<option value="${a.id}">${esc(a.service)} - ${esc(a.customer)} (${money(a.fee-paidForApp(a.id))} बाकी)</option>`).join('')||'<option value="">कोई आवेदन नहीं</option>'}
+function togglePayApp(){document.getElementById('payAppWrap').classList.toggle('hidden',document.getElementById('allocation').value!=='single')}
+document.getElementById('paymentForm').onsubmit=e=>{e.preventDefault();let f=new FormData(e.target),cid=f.get('clientId'),amount=Number(f.get('amount'));if(!cid)return alert('दुकानदार चुनें');let appId=f.get('allocation')==='single'?f.get('appId'):'';if(f.get('allocation')==='single'&&!appId)return alert('आवेदन चुनें');db.payments.push({id:id(),clientId:cid,appId,amount,method:f.get('method'),date:f.get('date')||today(),note:f.get('note'),created:Date.now()});e.target.reset();document.getElementById('payDate').value=today();togglePayApp();save();alert('पेमेंट सेव हो गया')};
+function renderPayments(){let xs=db.payments.slice().sort((a,b)=>b.created-a.created);document.getElementById('paymentTable').innerHTML=xs.length?table(['तारीख','दुकानदार','आवेदन आवंटन','रकम','माध्यम','नोट'],xs.map(p=>[esc(p.date),esc(clientName(p.clientId)),esc(p.appId?db.apps.find(a=>a.id===p.appId)?.service||'आवेदन':'खाते में / सामान्य'),money(p.amount),esc(p.method),esc(p.note)])):'<div class="empty">अभी पेमेंट रिकॉर्ड नहीं है।</div>'}
+function renderReports(){let cid=document.getElementById('reportClient')?.value||'',apps=db.apps.filter(a=>!cid||a.clientId===cid),payments=db.payments.filter(p=>!cid||p.clientId===cid),fee=apps.reduce((s,a)=>s+Number(a.fee),0),paid=payments.reduce((s,p)=>s+Number(p.amount),0);document.getElementById('reportSummary').innerHTML=[['आवेदन',apps.length],['कुल फीस',money(fee)],['कुल जमा',money(paid)],['बकाया',money(Math.max(0,fee-paid))]].map(x=>`<div class="card"><div class="muted">${x[0]}</div><div class="metric">${x[1]}</div></div>`).join('');document.getElementById('reportTable').innerHTML=apps.length?table(['दुकानदार','ग्राहक','सेवा','फीस','आवेदन पर जमा','स्थिति'],apps.map(a=>[esc(clientName(a.clientId)),esc(a.customer),esc(a.service),money(a.fee),money(paidForApp(a.id)),esc(a.status)])):'<div class="empty">रिपोर्ट के लिए आवेदन नहीं हैं।</div>'}
+function backup(){let blob=new Blob([JSON.stringify({version:1,exported:new Date().toISOString(),data:db},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='DIGITAL_POINT_BACKUP_'+today()+'.json';a.click();URL.revokeObjectURL(a.href)}
+function restore(e){let file=e.target.files[0];if(!file)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x.data||!Array.isArray(x.data.clients)||!Array.isArray(x.data.apps)||!Array.isArray(x.data.payments))throw Error();if(confirm('मौजूदा डेटा बदलकर बैकअप Restore करें? पहले मौजूदा बैकअप डाउनलोड कर लें।')){db=x.data;save();alert('Restore सफल')}}catch(err){alert('यह सही DIGITAL POINT बैकअप फाइल नहीं है')}};r.readAsText(file)}
+document.getElementById('passwordForm').onsubmit=e=>{e.preventDefault();let f=new FormData(e.target);if(f.get('old')!==localStorage.getItem(PASS))return alert('पुराना पासवर्ड गलत है');localStorage.setItem(PASS,f.get('next'));e.target.reset();alert('पासवर्ड बदल गया')};
+function downloadCSV(){let cid=document.getElementById('reportClient').value,rows=[['दुकानदार','ग्राहक','मोबाइल','सेवा','रेफरेंस','तारीख','फीस','आवेदन पर जमा','बकाया','स्थिति']];db.apps.filter(a=>!cid||a.clientId===cid).forEach(a=>rows.push([clientName(a.clientId),a.customer,a.mobile,a.service,a.ref,a.date,a.fee,paidForApp(a.id),Math.max(0,a.fee-paidForApp(a.id)),a.status]));let csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n');let b=new Blob([csv],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='DIGITAL_POINT_REPORT_'+today()+'.csv';a.click();URL.revokeObjectURL(a.href)}
+init();
+</script></body></html>
